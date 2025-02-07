@@ -14,6 +14,11 @@ const router = createRouter({
             name: "tictactoe",
             component: () => import("@/modules/tictactoe/views/tictactoe.vue"),
         },
+        {
+            path: "/admin",
+            name: "admin",
+            component: () => import("@/admin/admin.vue"),
+        },
     ],
 });
 

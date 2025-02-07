@@ -1,14 +1,20 @@
 import express from "express";
 import { createServer } from "node:http";
 import { Server } from "socket.io";
+import { instrument } from "@socket.io/admin-ui";
 
 const app = express();
 const server = createServer(app);
 const io = new Server(server, {
     cors: {
-        origin: "*", 
+        origin: ["http://localhost:5173", "https://admin.socket.io"],
+        credentials: true,
         methods: ["GET", "POST"],
     },
+});
+
+instrument(io, {
+    auth: false,
 });
 
 app.get("/", (req, res) => {
@@ -25,13 +31,15 @@ io.on("connection", (socket) => {
     });
 
     socket.on("changeSquare", (currentBoard, currentPlayer) => {
-        console.log(currentBoard)
-        console.log(currentPlayer)
-        console.log(socket.rooms)
-        io.emit("changeSquare", currentBoard, currentPlayer)
-    })
+        console.log(currentBoard);
+        console.log(currentPlayer);
+        console.log(socket.rooms);
+        io.emit("changeSquare", currentBoard, currentPlayer);
+    });
 });
 
-server.listen(3000, () => {
-    console.log("Server running at http://localhost:3000");
+app.use("/admin", express.static("node_modules/@socket.io/admin-ui/ui/dist"));
+
+server.listen(3005, () => {
+    console.log("Server running at http://localhost:3005");
 });
