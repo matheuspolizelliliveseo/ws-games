@@ -23,9 +23,8 @@ app.get("/", (req, res) => {
 
 io.on("connection", (socket) => {
     console.log(`User connected: ${socket.id}`);
-    socket.join("room1");
-    socket.leave(socket.id);
 
+    console.log(socket.rooms);
     socket.on("disconnect", () => {
         console.log(`User disconnected: ${socket.id}`);
     });
@@ -35,6 +34,17 @@ io.on("connection", (socket) => {
         console.log(currentPlayer);
         console.log(socket.rooms);
         io.emit("changeSquare", currentBoard, currentPlayer);
+    });
+
+    socket.on("enterRoom", (room) => {
+        console.log(room);
+        socket.join(room);
+        console.log(socket.rooms);
+    });
+
+    socket.on("leaveRoom", (room) => {
+        socket.leave(room);
+        console.log(socket.rooms);
     });
 });
 
